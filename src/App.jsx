@@ -9,6 +9,7 @@ const dummyTasks = [
 export default function App() {
   const [tasks, setTasks] = useState([]);
   const [text, setText] = useState("");
+  const [showInput, setShowInput] = useState(false);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("tasks"));
@@ -23,6 +24,7 @@ export default function App() {
     if (!text.trim()) return;
     setTasks([...tasks, { id: Date.now(), text, completed: false }]);
     setText("");
+    setShowInput(false);
   };
 
   const toggle = (id) =>
@@ -88,24 +90,32 @@ export default function App() {
             ))}
           </div>
 
-          {/* Input */}
-          <div className="space-y-0">
-            <textarea
-              className="w-full p-2 border h-[] rounded-xl resize-none focus:outline-none shadow mb-0"
-              rows={2}
-              placeholder="Tambah aktivitas..."
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            />
-          </div>
+          {/* Input (muncul saat tombol ditekan) */}
+          {showInput && (
+            <div className="space-y-2">
+              <textarea
+                className="w-full p-2 border rounded-xl resize-none focus:outline-none shadow"
+                rows={2}
+                placeholder="Tambah aktivitas..."
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+              />
+              <button
+                onClick={addTask}
+                className="w-full bg-green-600 text-white py-2 rounded-xl font-semibold hover:bg-green-700"
+              >
+                Tambah
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Tombol Tambah */}
+        {/* Tombol utama: toggle input */}
         <button
-          onClick={addTask}
+          onClick={() => setShowInput(!showInput)}
           className="bg-blue-600 text-white w-full py-3 rounded-xl text-xl font-bold shadow hover:bg-blue-700"
         >
-          +
+          {showInput ? "×" : "+"}
         </button>
       </div>
     </div>
